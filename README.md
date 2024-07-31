@@ -1,5 +1,7 @@
 # atividadeJS
-<label for="cpf">CPF (XXX.XXX.XXX-XX):</label>
+ <label for="cpf">CPF (XXX.XXX.XXX-XX):</label>
+                <input type="text" id="cpf" maxlength="14" placeholder="123.456.789-00">
+                <span id="cpf-error" class="error"></span>
                 <input type="text" id="cpf" maxlength="14" placeholder="123.456.789-00">
                 <span id="cpf-error" class="error"></span>
                 document.addEventListener('DOMContentLoaded', () => {
