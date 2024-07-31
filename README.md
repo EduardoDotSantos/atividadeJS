@@ -1,84 +1,55 @@
 # atividadeJS
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validação de CEP e CNPJ</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Validação de CEP e CNPJ</h1>
-
-        <form id="form">
-            <div class="field">
-                <label for="cep">CEP (XXXXX-XXX):</label>
-                <input type="text" id="cep" maxlength="10" placeholder="12345-678">
-                <span id="cep-error" class="error"></span>
-            </div>
-
-            <div class="field">
-                <label for="cnpj">CNPJ (XX.XXX.XXX/0001-XX):</label>
-                <input type="text" id="cnpj" maxlength="18" placeholder="12.345.678/0001-95">
-                <span id="cnpj-error" class="error"></span>
-            </div>
-
-            <button type="submit">Enviar</button>
-        </form>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form');
-    const cepInput = document.getElementById('cep');
-    const cnpjInput = document.getElementById('cnpj');
-    const cepError = document.getElementById('cep-error');
-    const cnpjError = document.getElementById('cnpj-error');
+<label for="cpf">CPF (XXX.XXX.XXX-XX):</label>
+                <input type="text" id="cpf" maxlength="14" placeholder="123.456.789-00">
+                <span id="cpf-error" class="error"></span>
+                document.addEventListener('DOMContentLoaded', () => {
+    const cpfInput = document.getElementById('cpf');
+    const cpfError = document.getElementById('cpf-error');
+    const form = document.getElementById('cpf-form');
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        const cepValue = cepInput.value.replace(/\D/g, '');
-        const cnpjValue = cnpjInput.value.replace(/\D/g, '');
 
-        let isValid = true;
+        const cpfValue = cpfInput.value.replace(/\D/g, '');
 
-        // Validar CEP
-        if (cepValue.length !== 8) {
-            cepError.textContent = 'CEP deve ter 8 dígitos.';
-            isValid = false;
+        if (!isValidCPF(cpfValue)) {
+            cpfError.textContent = 'CPF inválido.';
         } else {
-            cepError.textContent = '';
-        }
-
-        // Validar CNPJ
-        if (cnpjValue.length !== 14) {
-            cnpjError.textContent = 'CNPJ deve ter 14 dígitos.';
-            isValid = false;
-        } else {
-            cnpjError.textContent = '';
-        }
-
-        if (isValid) {
-            alert('Dados validados com sucesso!');
+            cpfError.textContent = '';
+            alert('CPF válido!');
         }
     });
 
-    // Adiciona formatação ao CEP e CNPJ conforme o usuário digita
-    cepInput.addEventListener('input', () => {
-        cepInput.value = cepInput.value
+    // Adiciona formatação ao CPF conforme o usuário digita
+    cpfInput.addEventListener('input', () => {
+        cpfInput.value = cpfInput.value
             .replace(/\D/g, '')
-            .replace(/^(\d{5})(\d{0,3}).*/, '$1-$2');
-    });
-
-    cnpjInput.addEventListener('input', () => {
-        cnpjInput.value = cnpjInput.value
-            .replace(/\D/g, '')
-            .replace(/^(\d{2})(\d{0,3})(\d{0,3})(\d{0,4})/, '$1.$2.$3/$4-')
+            .replace(/^(\d{3})(\d{0,3})(\d{0,3})(\d{0,2})/, '$1.$2.$3-$4')
             .trim();
     });
+
+    function isValidCPF(cpf) {
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+        let sum = 0;
+        let remainder;
+
+        for (let i = 1; i <= 9; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (11 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) remainder = 0;
+        if (remainder !== parseInt(cpf.charAt(9))) return false;
+
+        sum = 0;
+        for (let i = 1; i <= 10; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (12 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) remainder = 0;
+        return remainder === parseInt(cpf.charAt(10));
+    }
 });
 
